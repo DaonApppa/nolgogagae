@@ -2,16 +2,16 @@
 <html>
 <head>
     <title>놀고가게 신청표</title>
-    <meta charset="UTF-8"> <!-- 인코딩을 UTF-8로 지정합니다. -->
+    <meta charset="UTF-8">
     <style>
         body {
-            font-size: 14px; /* 기본 글자 크기를 14px로 지정합니다. */
+            font-size: 14px;
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
-            font-family: Arial, sans-serif; /* 폰트 설정을 추가합니다. */
+            font-family: Arial, sans-serif;
         }
 
         th, td {
@@ -27,81 +27,120 @@
         tr:hover {
             background-color: #f5f5f5;
         }
+
+        /* 달력 스타일 */
+        .calendar {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        .calendar th, .calendar td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .calendar th {
+            background-color: #f2f2f2;
+        }
+
+        .calendar td {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h2>놀고가게 신청표</h2>
-    <table id="timetable">
-        <tr>
-            <th>시간</th>
-            <!-- 각 시간대마다 8명의 입력 셀을 추가합니다. -->
-            <th>이름1</th>
-            <th>이름2</th>
-            <th>이름3</th>
-            <th>이름4</th>
-            <th>이름5</th>
-            <th>이름6</th>
-            <th>이름7</th>
-            <th>이름8</th>
-        </tr>
-        <!-- 시간대 행을 9시부터 24시까지 1시간 간격으로 반복하여 추가합니다. -->
-        <!-- 시간표 행 생성 함수 -->
-        <script>
-            function createTimetable() {
-                const table = document.getElementById('timetable');
-                for (let i = 9; i <= 24; i++) {
-                    const newRow = table.insertRow();
-                    const timeCell = newRow.insertCell();
-                    timeCell.innerText = `${i}:00 - ${i + 1}:00`;
+    <div class="calendar">
+        <label for="year">연도:</label>
+        <input type="number" id="year" value="2023">
+        <label for="month">월:</label>
+        <input type="number" id="month" min="1" max="12" value="7">
+        <button onclick="createCalendar()">달력 보기</button>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="7">달력</th>
+                </tr>
+                <tr>
+                    <th>일</th>
+                    <th>월</th>
+                    <th>화</th>
+                    <th>수</th>
+                    <th>목</th>
+                    <th>금</th>
+                    <th>토</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body"></tbody>
+        </table>
+    </div>
 
-                    // 8개의 이름 입력 셀을 추가합니다.
-                    for (let j = 0; j < 8; j++) {
-                        const nameCell = newRow.insertCell();
-                        nameCell.contentEditable = "true";
-                        nameCell.innerText = ""; // 초기값은 비워둡니다.
-                    }
-                }
-            }
-        </script>
-    </table>
+    <!-- 신청표 컨테이너 -->
+    <div id="timetable-container" style="display: none;">
+        <h3 id="selected-date"></h3>
+        <table id="timetable"></table>
+        <button onclick="promptPassword()">초기화</button>
+    </div>
 
-    <!-- 초기화 버튼을 추가합니다. -->
-    <button onclick="promptPassword()">초기화</button>
-
-    <!-- 페이지가 로드되면 시간표를 생성하고, 저장된 데이터를 불러옵니다. -->
     <script>
+        const calendarBody = document.getElementById('calendar-body');
+        const timetableContainer = document.getElementById('timetable-container');
+        const selectedDateDisplay = document.getElementById('selected-date');
+
         window.addEventListener('load', function() {
-            createTimetable();
+            createCalendar();
             loadTimetableFromStorage();
         });
 
-        // 데이터를 로컬 스토리지에 저장하는 함수
-        function saveTimetableToStorage() {
-            const timetableData = [];
-            const table = document.getElementById('timetable');
+        // 달력 생성 함수 (1일로 초기화된 날짜에서 달력 생성)
+        function createCalendar() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value) - 1;
 
-            // 데이터를 테이블에서 추출합니다.
-            for (let i = 1; i < table.rows.length; i++) {
-                const row = table.rows[i];
-                const time = row.cells[0].innerText;
-                const names = [];
+            const today = new Date(year, month, 1);
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startingDay = firstDay.getDay();
+            const endingDay = lastDay.getDate();
 
-                // 각 시간대 행에 있는 이름을 추출합니다.
-                for (let j = 1; j < row.cells.length; j++) {
-                    const name = row.cells[j].innerText.trim();
-                    names.push(name);
+            let date = 1;
+            let calendarHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                calendarHTML += '<tr>';
+
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < startingDay) {
+                        calendarHTML += '<td></td>';
+                    } else if (date > endingDay) {
+                        break;
+                    } else {
+                        calendarHTML += `<td onclick="showTimetable(${year}, ${month + 1}, ${date})">${date}</td>`;
+                        date++;
+                    }
                 }
 
-                timetableData.push({ time, names });
+                calendarHTML += '</tr>';
             }
 
-            // 추출한 데이터를 로컬 스토리지에 저장합니다.
-            localStorage.setItem('timetable', JSON.stringify(timetableData));
+            calendarBody.innerHTML = calendarHTML;
         }
 
         // 로컬 스토리지로부터 데이터를 불러와서 테이블에 표시하는 함수
         function loadTimetableFromStorage() {
-            const savedData = localStorage.getItem('timetable');
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const date = today.getDate();
+
+            const storageKey = `${year}-${month}-${date}`;
+            const savedData = localStorage.getItem(storageKey);
 
             if (savedData) {
                 const timetableData = JSON.parse(savedData);
@@ -125,42 +164,44 @@
                         nameCell.innerText = data.names[i] || ""; // 빈 값을 처리합니다.
                     }
                 });
-            }
-        }
-
-        // 초기화 버튼 클릭 시 비밀번호 확인을 받는 함수
-        function promptPassword() {
-            const inputPassword = prompt("비밀번호를 입력하세요.");
-
-            if (inputPassword === "0831") {
-                // 비밀번호가 일치하면 시간표를 초기화합니다.
-                clearTimetable();
             } else {
-                alert("비밀번호가 올바르지 않습니다. 초기화할 수 없습니다.");
-            }
+		initTimetable();
+            }   
         }
 
-        // 초기화 버튼 클릭 시 시간표를 초기화하는 함수
-        function clearTimetable() {
-            const table = document.getElementById('timetable');
-
+  	// 테이블 초기화 함수
+        function initTimetable() {
             // 기존 행 삭제
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
+            while (timetable.rows.length > 1) {
+                timetable.deleteRow(1);
             }
 
-            // 새로운 시간표 생성
-            createTimetable();
+            // 시간표 행 추가
+            for (let i = 9; i <= 24; i++) {
+                const newRow = timetable.insertRow();
+                const timeCell = newRow.insertCell();
+                timeCell.innerText = i + "시";
 
-            // 로컬 스토리지 초기화
-            localStorage.removeItem('timetable');
+                // 이름 셀 추가
+                for (let j = 0; j < 8; j++) {
+                    const nameCell = newRow.insertCell();
+                    nameCell.contentEditable = "true";
+                }
+            }
         }
 
-        // 사용자가 테이블 내용을 편집할 때마다 저장 함수를 호출합니다.
-        const table = document.getElementById('timetable');
-        table.addEventListener('input', function() {
-            saveTimetableToStorage();
-        });
+        // 선택한 날짜에 해당하는 시간표를 새 페이지로 보여주는 함수
+	function showTimetable(year, month, date) {
+            // URLSearchParams 객체를 생성하여 파라미터를 추가합니다.
+            const params = new URLSearchParams();
+    	    params.append("year", year);
+            params.append("month", month);
+            params.append("date", date);
+
+	    // timetable.html 페이지를 새 창으로 열면서 파라미터를 전달합니다.
+            window.location.href = `timetable.html?${params.toString()}`;
+        }
+
     </script>
 </body>
 </html>
