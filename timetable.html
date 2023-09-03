@@ -308,7 +308,23 @@
         table.addEventListener('input', function() {
             saveTimetableToStorage();
         });
+		
+		// 'Tab' 키와 'Enter' 키를 누를 때 아래로 이동하는 기능 추가
+		table.addEventListener('keydown', function(event) {
+			if (event.key === 'Tab' || event.key === 'Enter') {
+				event.preventDefault();
 
+				const activeCell = document.activeElement;
+				const currentRowIndex = activeCell.parentElement.rowIndex;
+				const currentCellIndex = activeCell.cellIndex;
+
+				if (currentRowIndex < table.rows.length - 1) {
+					const nextRow = table.rows[currentRowIndex + 1];
+					const nextCell = nextRow.cells[currentCellIndex];
+					nextCell.focus();
+				}
+			}
+		});
 
     </script>
 </body>
