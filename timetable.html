@@ -358,6 +358,16 @@
 				}
 			}
 		});
+		
+		// 비밀번호 입력 팝업에서 입력한 숫자를 '*'로 바꿉니다.
+		document.addEventListener('DOMContentLoaded', function() {
+			const inputPassword = document.querySelector('input[type="password"]');
+			if (inputPassword) {
+				inputPassword.addEventListener('input', function() {
+					this.value = this.value.replace(/\D/g, '*');
+				});
+			}
+		});
 
     </script>
 </body>
