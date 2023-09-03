@@ -364,7 +364,7 @@
 			const inputPassword = document.querySelector('input[type="password"]');
 			if (inputPassword) {
 				inputPassword.addEventListener('input', function() {
-					this.value = this.value.replace(/\D/g, '*');
+					this.value = this.value.replace(/\d/g, '*');
 				});
 			}
 		});
