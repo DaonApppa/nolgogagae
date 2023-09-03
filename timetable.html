@@ -308,26 +308,33 @@
 
 		// 시간표 초기화 함수
         function resetTimetable() {
-            // 날짜 정보를 URL 파라미터로부터 읽어옵니다.
-            const urlParams = new URLSearchParams(window.location.search);
-            const year = parseInt(urlParams.get("year"));
-            const month = parseInt(urlParams.get("month"));
-            const date = parseInt(urlParams.get("date"));
+			const inputPassword = prompt("비밀번호를 입력하세요.");
 
-            const storageKey = `${year}-${month}-${date}`;
+            if (inputPassword === "880831") {
+                // 비밀번호가 일치하면 시간표를 초기화합니다.
+				// 날짜 정보를 URL 파라미터로부터 읽어옵니다.
+				const urlParams = new URLSearchParams(window.location.search);
+				const year = parseInt(urlParams.get("year"));
+				const month = parseInt(urlParams.get("month"));
+				const date = parseInt(urlParams.get("date"));
 
-            // 로컬 스토리지에서 해당 날짜의 데이터 삭제
-            localStorage.removeItem(storageKey);
+				const storageKey = `${year}-${month}-${date}`;
 
-			// 시간표 데이터만 초기화
-			const rows = table.rows;
-			for (let i = 1; i < rows.length; i++) {
-				const cells = rows[i].cells;
-				for (let j = 1; j < cells.length; j++) {
-					const cell = cells[j];
-					cell.innerText = ""; // 셀 내용을 비웁니다.
+				// 로컬 스토리지에서 해당 날짜의 데이터 삭제
+				localStorage.removeItem(storageKey);
+
+				// 시간표 데이터만 초기화
+				const rows = table.rows;
+				for (let i = 1; i < rows.length; i++) {
+					const cells = rows[i].cells;
+					for (let j = 1; j < cells.length; j++) {
+						const cell = cells[j];
+						cell.innerText = ""; // 셀 내용을 비웁니다.
+					}
 				}
-			}
+            } else {
+                alert("비밀번호가 올바르지 않습니다. 초기화할 수 없습니다.");
+            }
         }
 
         // 사용자가 테이블 내용을 편집할 때마다 저장 함수를 호출합니다.
