@@ -224,6 +224,8 @@
             </tr>
         </tbody>
     </table>
+	
+	<button onclick="resetTimetable()">초기화</button>
 
     <script>
         const table = document.getElementById('timetable');
@@ -302,6 +304,30 @@
                 // 로컬 스토리지에서 데이터를 불러와서 테이블에 채웁니다.
                 fillTableWithData(timetableData);
             }
+        }
+
+		// 시간표 초기화 함수
+        function resetTimetable() {
+            // 날짜 정보를 URL 파라미터로부터 읽어옵니다.
+            const urlParams = new URLSearchParams(window.location.search);
+            const year = parseInt(urlParams.get("year"));
+            const month = parseInt(urlParams.get("month"));
+            const date = parseInt(urlParams.get("date"));
+
+            const storageKey = `${year}-${month}-${date}`;
+
+            // 로컬 스토리지에서 해당 날짜의 데이터 삭제
+            localStorage.removeItem(storageKey);
+
+			// 시간표 데이터만 초기화
+			const rows = table.rows;
+			for (let i = 1; i < rows.length; i++) {
+				const cells = rows[i].cells;
+				for (let j = 1; j < cells.length; j++) {
+					const cell = cells[j];
+					cell.innerText = ""; // 셀 내용을 비웁니다.
+				}
+			}
         }
 
         // 사용자가 테이블 내용을 편집할 때마다 저장 함수를 호출합니다.
