@@ -31,7 +31,7 @@
 </head>
 <body>
     <h2>놀고가게 신청표</h2>
-    <table id="timetable">
+    <table id="timetable" tabindex="0">
         <thead>
             <tr>
                 <th>시간</th>
@@ -308,10 +308,31 @@
         table.addEventListener('input', function() {
             saveTimetableToStorage();
         });
-        // 뒤로 가기 함수
-        function goBack() {
-            window.history.back();
-        }
+		
+		
+        var table = document.getElementById("timetable");
+        var cells = table.getElementsByTagName("td");
+
+        table.addEventListener("keydown", function(event) {
+            if (event.key === "Tab") {
+                event.preventDefault(); // 기본 탭 이벤트 막기
+
+                // 현재 포커스된 셀 찾기
+                var currentCell = document.activeElement;
+
+                // 현재 셀의 인덱스 찾기
+                var currentIndex = Array.from(cells).indexOf(currentCell);
+
+                // 다음 행의 같은 열의 셀로 이동
+                var nextRow = table.rows[currentCell.parentElement.rowIndex + 1];
+                if (nextRow) {
+                    var nextCell = nextRow.cells[currentIndex];
+                    if (nextCell) {
+                        nextCell.focus();
+                    }
+                }
+            }
+        });
 
     </script>
 </body>
