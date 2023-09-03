@@ -228,21 +228,6 @@
     <script>
         const table = document.getElementById('timetable');
 
-		table.addEventListener("keydown", function (event) {
-            if (event.key === "Tab") {
-                event.preventDefault(); // 기본 동작을 막음
-                var cell = event.target;
-                var row = cell.parentElement;
-                var nextRow = row.nextElementSibling;
-                if (nextRow) {
-                    var nextCell = nextRow.querySelector("td");
-                    if (nextCell) {
-                        nextCell.focus(); // 다음 행의 첫 번째 셀로 포커스 이동
-                    }
-                }
-            }
-        });
-
         // 페이지가 로드될 때 기존 데이터를 로드하도록 합니다.
         window.addEventListener('load', function() {
             loadTimetableFromStorage();
