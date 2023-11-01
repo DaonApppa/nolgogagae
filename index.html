@@ -15,17 +15,12 @@
 </head>
 <body>
     <div>지니 코 짱큼</div>
-    <button onclick="requestFullScreen()">전체 화면으로</button>
     <script>
-        function requestFullScreen() {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().then(function() {
-                    // 전체 화면 모드로 전환될 때 아무것도 하지 않음
-                }).catch(function(error) {
-                    console.error("전체 화면 모드로 전환할 수 없습니다.", error);
-                });
-            }
-        }
+        document.documentElement.requestFullscreen().then(function() {
+            // 전체 화면 모드로 전환될 때 아무것도 하지 않음
+        }).catch(function(error) {
+            console.error("전체 화면 모드로 전환할 수 없습니다.", error);
+        });
     </script>
 </body>
 </html>
