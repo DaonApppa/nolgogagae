@@ -2,14 +2,26 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .text {
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
-    <div style="font-size: 36px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        지니 코 짱큼
-    </div>
+    <div class="text">지니 코 짱큼</div>
+    <script>
+        // 모바일에서 전체 화면 모드로 전환
+        document.documentElement.requestFullscreen().catch(function (e) {
+            console.error("전체 화면 모드로 전환할 수 없습니다.", e);
+        });
+    </script>
 </body>
-<script>
-    // 전체 화면 모드로 전환
-    document.documentElement.requestFullscreen(); // 또는 document.documentElement.webkitRequestFullscreen(); (크롬)
-</script>
 </html>
