@@ -9,19 +9,23 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-        }
-        .text {
-            font-size: 24px;
+            font-size: 36px;
         }
     </style>
 </head>
 <body>
-    <div class="text">지니 코 짱큼</div>
+    <div>지니 코 짱큼</div>
+    <button onclick="requestFullScreen()">전체 화면으로</button>
     <script>
-        // 모바일에서 전체 화면 모드로 전환
-        document.documentElement.requestFullscreen().catch(function (e) {
-            console.error("전체 화면 모드로 전환할 수 없습니다.", e);
-        });
+        function requestFullScreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().then(function() {
+                    // 전체 화면 모드로 전환될 때 아무것도 하지 않음
+                }).catch(function(error) {
+                    console.error("전체 화면 모드로 전환할 수 없습니다.", error);
+                });
+            }
+        }
     </script>
 </body>
 </html>
